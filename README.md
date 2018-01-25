@@ -12,5 +12,8 @@ To evaluate with SimLex-999 (or SimVerb-3500), you have to call the evaluation s
 `python simlex_evaluator.py simlexorig999.txt ../results/<output_file>`
 
 All SGNS-BOW2 and Glove300 vectors (and necessary subsets of vectors) are available from my Google Drive at the following link:
+https://drive.google.com/open?id=1K5VJTHFPql5WvtYB-GiZrgSgayh54KNB
+
+(You need to place the extracted vectors under sub-directory `./vectors`)
 
 If you have any question, please send it to me at: iv250@cam.ac.uk
