@@ -8,6 +8,19 @@ import numpy as np
 import logging
 from dictionary import Dictionary
 
+class GaussianNoise(nn.Module):
+    def __init__(self, cuda, stddev=0.2):
+        super(GaussianNoise, self).__init__()
+        self.stddev = stddev
+	self.cuda = cuda
+
+    def forward(self, din):
+        if self.training:
+	    noise = torch.autograd.Variable(torch.randn(din.size()))
+	    noise = noise.cuda() if self.cuda else noise
+            return din + noise * self.stddev
+        return din
+
 class Discriminator(nn.Module):
 
     def __init__(self, params):
@@ -20,7 +33,9 @@ class Discriminator(nn.Module):
         self.dis_input_dropout = params.dis_input_dropout
 
         layers = [nn.Dropout(self.dis_input_dropout)]
-        for i in range(self.dis_layers + 1):
+        if params.noise:
+	    layers.append(GaussianNoise(params.cuda))    
+	for i in range(self.dis_layers + 1):
             input_dim = self.emb_dim if i == 0 else self.dis_hid_dim
             output_dim = 1 if i == self.dis_layers else self.dis_hid_dim
             layers.append(nn.Linear(input_dim, output_dim))
@@ -34,6 +49,33 @@ class Discriminator(nn.Module):
         assert x.dim() == 2 and x.size(1) == self.emb_dim
         return self.layers(x).view(-1)
 
+class Generator(nn.Module):
+
+    def __init__(self, params):
+        super(Generator, self).__init__()
+
+        self.emb_dim = params.emb_dim
+        self.dis_layers = params.gen_layers
+        self.dis_hid_dim = params.gen_hid_dim
+        self.dis_dropout = params.gen_dropout
+        self.dis_input_dropout = params.gen_input_dropout
+
+        layers = [nn.Dropout(self.dis_input_dropout)]
+        for i in range(self.dis_layers + 1):
+            input_dim = self.emb_dim if i == 0 else self.dis_hid_dim
+            output_dim = self.emb_dim if i == self.dis_layers else self.dis_hid_dim
+            layers.append(nn.Linear(input_dim, output_dim))
+            if i < self.dis_layers:
+                layers.append(nn.LeakyReLU(0.2))
+                layers.append(nn.Dropout(self.dis_dropout))
+		if params.noise:
+		    layers.append(GaussianNoise(params.cuda))
+        self.layers = nn.Sequential(*layers)
+
+    def forward(self, x):
+        assert x.dim() == 2 and x.size(1) == self.emb_dim
+        return self.layers(x)
+
 def load_external_embeddings(params, emb_path):
     """
     Reload pretrained embeddings from a text file.
@@ -46,6 +88,9 @@ def load_external_embeddings(params, emb_path):
     _emb_dim_file = params.emb_dim
     with codecs.open(emb_path) as f:
         for i, line in enumerate(f):
+	    if len(line.split()) == 2:
+		i -= 1
+		continue
             word, vect = line.rstrip().split(' ', 1)
             vect = np.fromstring(vect, sep=' ')
             if np.linalg.norm(vect) == 0:  # avoid to have null embeddings
@@ -99,12 +144,7 @@ def build_model(params, with_dis):
     tgt_emb.weight.data.copy_(_tgt_emb)
 
     # mapping
-    if params.map_type == "linear":
-        mapping = nn.Linear(params.emb_dim, params.emb_dim, bias=False)
-        if getattr(params, 'map_id_init', True):
-            mapping.weight.data.copy_(torch.diag(torch.ones(params.emb_dim)))
-    else:
-        raise Exception('Unknown mapping type: "%s"' % params.map_type)
+    mapping = Generator(params)
 
     # discriminator
     discriminator = Discriminator(params)

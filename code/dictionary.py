@@ -42,8 +42,8 @@ class Dictionary(object):
         Check that the dictionary is valid.
         """
         assert len(self.id2word) == len(self.word2id)
-        for i in range(len(self.id2word)):
-            assert self.word2id[self.id2word[i]] == i
+        for k, v in self.id2word.items():
+            assert self.word2id[v] == k
 
     def index(self, word):
         """
