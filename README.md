@@ -1,13 +1,14 @@
 # adversarial-postspec
 The implementation of a GAN with an auxiliary distance loss to post-specialise word embeddings. Code for the paper:
 
-Edoardo Maria Ponti, Ivan Vulić, Goran Glavaš, Nikola Mrkšić, and Anna Korhonen. Submitted. **Adversarial Propagation and Zero-Shot Cross-Lingual Transfer of Word Vector Specialization**
+Edoardo Maria Ponti, Ivan Vulić, Goran Glavaš, Nikola Mrkšić, and Anna Korhonen. 2018. **Adversarial Propagation and Zero-Shot Cross-Lingual Transfer of Word Vector Specialization**. In Proceedings of EMNLP 2018.
 
 If you use this software for academic research, please cite the paper in question:
 ```
-@techreport{ponti2018adversarial,
+@inproceedings{ponti2018adversarial,
   title={Adversarial Propagation and Zero-Shot Cross-Lingual Transfer of Word Vector Specialization},
-  author={Ponti, Edoardo Maria and Vulić, Ivan and Glavaš, Goran and Mrkšić, NIkola and Korhonen, Anna},
+  author={Ponti, Edoardo Maria and Vulić, Ivan and Glavaš, Goran and Mrkšić, Nikola and Korhonen, Anna},
+  booktitle={Proceedings of EMNLP 2018},
   year={2018}
 }
 ```
@@ -61,15 +62,15 @@ Our papers reports state-of-art scores for both SimLex and SimVerb: in the disjo
     <td> SL </td> <td> SV </td> <td> SL </td> <td> SV </td> <td> SL </td> <td> SV </td>
   </tr>
   <tr>
-<td>Distributional*X*</td> <td>.407</td> <td>.280</td> <td>.383</td> <td>.247</td> <td>.414</td> <td>.272</td> <td>.407</td> <td>.280</td> <td>.383</td> <td>.247</td> <td>.414</td> <td>.272</td> </tr>
+<td>Distributional</td> <td>.407</td> <td>.280</td> <td>.383</td> <td>.247</td> <td>.414</td> <td>.272</td> <td>.407</td> <td>.280</td> <td>.383</td> <td>.247</td> <td>.414</td> <td>.272</td> </tr>
   <tr>
 <td>Specialized: Attract-Repel</td> <td>.407</td> <td>.280</td> <td>.383</td> <td>.247</td> <td>.414</td> <td>.272</td> <td>.781</td> <td>.761</td> <td>.764</td> <td>.744</td> <td>.778</td> <td>.761</td> </tr>
   <tr>
-<td>Post-Specialized: post-dffn</td> <td>.645</td> <td>.531</td> <td>.503</td> <td>.340</td> <td>.553</td> <td>.430</td> <td>.785</td> <td>.764</td> <td>.768</td> <td>.745</td> <td>.781</td> <td>.763</td> </tr>
+<td>Post-Specialized: MLP</td> <td>.645</td> <td>.531</td> <td>.503</td> <td>.340</td> <td>.553</td> <td>.430</td> <td>.785</td> <td>.764</td> <td>.768</td> <td>.745</td> <td>.781</td> <td>.763</td> </tr>
   <tr>
-<td>Post-Specialized:auxgan</td> <td><b>.652</b></td> <td><b>.552</b></td> <td><b>.513</b></td> <td><b>.394</b></td> <td><b>.581</b></td> <td><b>.434</b></td> <td>.789</td> <td>.764</td> <td>.766</td> <td>.741</td> <td>.782</td> <td>.762</td> </tr>
+<td>Post-Specialized: AuxGAN</td> <td><b>.652</b></td> <td><b>.552</b></td> <td><b>.513</b></td> <td><b>.394</b></td> <td><b>.581</b></td> <td><b>.434</b></td> <td>.789</td> <td>.764</td> <td>.766</td> <td>.741</td> <td>.782</td> <td>.762</td> </tr>
 </table>
 
-## License
+## Acknowledgements
 
-Licensed under the terms of the GNU General Public License, either version 3 or (at your option) any later version. A full copy of the license can be found in LICENSE.txt.
+Part of the code has been borrowed from the GAN implementation in [MUSE](https://github.com/facebookresearch/MUSE), with some changes. The link contains a copy of the original license.
