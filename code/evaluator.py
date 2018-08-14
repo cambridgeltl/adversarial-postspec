@@ -5,6 +5,7 @@ import numpy as np
 import torch
 from torch.autograd import Variable
 from torch.nn import functional as F
+from torch import Tensor as torch_tensor
 logger = getLogger()
 
 
@@ -39,6 +40,7 @@ class Evaluator(object):
 	indices = indices.cuda() if self.params.cuda else indices
         #mean_cosine = F.cosine_similarity(src_emb[indices[:, 0]], tgt_emb[indices[:, 1]])
 	mean_cosine = (src_emb[indices[:, 0]] * tgt_emb[indices[:, 1]]).sum(1).mean()
+	mean_cosine = mean_cosine.item() if isinstance(mean_cosine, torch_tensor) else mean_cosine
         logger.info("Mean cosine: %.5f" % mean_cosine)
         to_log['mean_cosine'] = mean_cosine
 
