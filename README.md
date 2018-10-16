@@ -2,6 +2,7 @@
 The implementation of a GAN with an auxiliary distance loss to post-specialise word embeddings. Code for the paper:
 
 Edoardo Maria Ponti, Ivan Vulić, Goran Glavaš, Nikola Mrkšić, and Anna Korhonen. 2018. **Adversarial Propagation and Zero-Shot Cross-Lingual Transfer of Word Vector Specialization**. In Proceedings of EMNLP 2018.
+[[arXiv]](https://arxiv.org/abs/1809.04163)
 
 If you use this software for academic research, please cite the paper in question:
 ```
@@ -15,15 +16,21 @@ If you use this software for academic research, please cite the paper in questio
 
 ## Directory structure
 
-* code: contains main scripts to train and test AuxGAN for post-specialization
-* evaluation: script and databases for intrinsic evaluation
-* results: where the output of the post-specialization procedure is saved
-* vectors: contains the training data (i.e. original vectors and vectors specialized by Attract-Repel)
-* vocab: list of words to be excluded from the training data because they are present in the evaluation databases.
+* *code*: contains main scripts to train and test AuxGAN for post-specialization
+* *evaluation*: script and databases for intrinsic evaluation
+* *results*: where the output of the post-specialization procedure is saved
+* *vectors*: contains the training data (i.e. original vectors and vectors specialized by Attract-Repel)
+* *vocab*: list of words to be excluded from the training data because they are present in the evaluation databases.
 
 ## Data
 
-All SGNS-BOW2 and Glove300 vectors (and necessary subsets of vectors) are available from Google Drive at the following [link](https://drive.google.com/open?id=1K5VJTHFPql5WvtYB-GiZrgSgayh54KNB).
+All vectors and models for English are available from Google Drive at the following [link](https://drive.google.com/open?id=1ASWJPbYWJ0TJwD9cUI4KfQLY9NnuO2Fn). 
+
+We provide the vectors for Skip-gram with Negative Sampling (*sngs*), Glove (*glove*), and Fasttext (*ft*). Separate files contain: 1) the original distributional vectors of the entire vocabulary (*prefix*); 2) the original distributional vectors of the words seen in the constraints (*distrib*); 3) the vectors that underwent Attract-Repel (*ar*); 4) and post-specialized vectors (*postspec*).
+
+The folder also contains some pre-trained models. These can be applied to new original distributional embeddings (e.g. from other languages), provided that they have been previously aligned with our original distributional spaces. In our experiments, we performed unsupervised alignments with [MUSE](https://github.com/facebookresearch/MUSE).
+
+Finally, the subfolder *xling* contains post-specialized Fasttext embeddings for Italian and German.
 
 ## Train
 
@@ -34,6 +41,14 @@ All SGNS-BOW2 and Glove300 vectors (and necessary subsets of vectors) are availa
 ```
 
 After completing the epochs, the script saves two files in the folder specified as ```--out_dir```: ```gold_embs.txt``` and ```silver_embs.txt```. They are based on two different settings where AR specialized vectors are saved when available (gold) and only post-specialized vectors are saved (silver). The paper reports the gold setting.
+
+## Apply Pre-trained Mappings
+
+```
+ cd code
+ python export.py --in_file ../vectors/IN_VECTORS --out_file ../vectors/OUT_VECTORS \\
+     --params ../models/EXPERIMENT_SETTINGS.pkl --model ../models/MAPPING_PARAMETERS.t7 
+```
 
 ## Evaluate
 
