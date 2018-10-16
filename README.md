@@ -24,7 +24,7 @@ If you use this software for academic research, please cite the paper in questio
 
 ## Data
 
-All vectors and models for English are available from Google Drive at the following [link](https://drive.google.com/open?id=1ASWJPbYWJ0TJwD9cUI4KfQLY9NnuO2Fn). 
+All vectors and models for English are available from Google Drive at the following [link](https://drive.google.com/file/d/1e7lhMqmAOSfb8dAAOrf229w67iF5eT3Z/view?usp=sharing). 
 
 We provide the vectors for Skip-gram with Negative Sampling (*sngs*), Glove (*glove*), and Fasttext (*ft*). Separate files contain: 1) the original distributional vectors of the entire vocabulary (*prefix*); 2) the original distributional vectors of the words seen in the constraints (*distrib*); 3) the vectors that underwent Attract-Repel (*ar*); 4) and post-specialized vectors (*postspec*).
 
