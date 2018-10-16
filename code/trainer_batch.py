@@ -281,41 +281,16 @@ class Trainer(object):
 	    logging.info('* Saving the mapping parameters to %s ...' % path)
             torch.save(checkpoint, path)
 
-    def reload_best(self):
+    def reload_best(self, mdl="default"):
         """
         Reload the best mapping.
         """
-        path = os.path.join(self.params.out_dir, 'best_mapping.t7')
+        path = os.path.join(self.params.out_dir, 'best_mapping.t7') if mdl == "default" else mdl
         logging.info('* Reloading the best model from %s ...' % path)
         # reload the model
         assert os.path.isfile(path)
         checkpoint = torch.load(path)
         self.mapping.load_state_dict(checkpoint['model'])
-
-    def export(self, params, tgt_emb):
-        logging.info("Exporting mapped embeddings...")
-        self.mapping.eval()
-        out_dico, out_emb = load_external_embeddings(params, params.unseen_file)
-        params.out_dico = out_dico
-        mapped_emb = self.mapping(Variable(out_emb, volatile=True)).data.cpu().numpy()
-	tgt_emb = tgt_emb.weight.data.cpu().numpy()
-        # Now translate the unseen words to the target AR-specialised vector space
-        all_keys = out_dico.word2id.keys()
-	gold_keys = self.tgt_dico.word2id.keys()
-        filename = "mapped_embs.txt"
-        fenc = codecs.open(params.out_dir + filename, "w")
-	for key in out_dico:
-            if key in gold_keys:
-		vector = tgt_emb[self.tgt_dico.index(key)]
-	    else:
-	        vector = mapped_emb[out_dico.index(key)]
-            vector = vector / np.linalg.norm(vector)
-            vector = map(str, list(vector))
-            encstr = " ".join([str(key)] + vector) + "\n"
-            fenc.write(encstr)
-
-        fenc.close()
-        logging.info("...Done!")
 
     def heldoutall(self, params):
         logging.info("Exporting mapped embeddings...")
@@ -324,13 +299,13 @@ class Trainer(object):
         params.out_dico = out_dico
         mapped_emb = self.mapping(Variable(out_emb, volatile=True)).data.cpu().numpy()
         ar_emb = self.tgt_emb.weight.data.cpu().numpy() 
-	logging.info("Reading SimLex and SimVerb words...")
+        logging.info("Reading SimLex and SimVerb words...")
 
         # Now translate the unseen words to the target AR-specialised vector space
         all_keys = out_dico.word2id.keys()
         fhel = codecs.open(params.out_dir + "gold_embs.txt", "w")
         fall = codecs.open(params.out_dir + "silver_embs.txt", "w")
-	for key in all_keys:
+        for key in all_keys:
             hv = mapped_emb[out_dico.index(key)]
             hv = hv / np.linalg.norm(hv)
             hv = map(str, list(hv))
@@ -349,17 +324,15 @@ class Trainer(object):
         fall.close()
         logging.info("...Done!")
 
-    def xling(self, params, pfx=""):
+    def export(self, params):
         logging.info("Exporting mapped embeddings...")
         self.mapping.eval()
-        out_dico, out_emb = load_external_embeddings(params, params.unseen_file)
+        out_dico, out_emb = load_external_embeddings(params, params.in_file)
         params.out_dico = out_dico
         mapped_emb = self.mapping(Variable(out_emb, volatile=True)).data.cpu().numpy()
-        logging.info("Reading SimLex and SimVerb words...")
 
-        # Now translate the unseen words to the target AR-specialised vector space
         all_keys = out_dico.word2id.keys()
-        fhel = codecs.open(params.out_dir + pfx + "xling_embs.txt", "w")
+        fhel = codecs.open(params.out_file)
         for key in all_keys:
             hv = mapped_emb[out_dico.index(key)]
             hv = hv / np.linalg.norm(hv)
@@ -369,4 +342,3 @@ class Trainer(object):
 
         fhel.close()
         logging.info("...Done!")
-
