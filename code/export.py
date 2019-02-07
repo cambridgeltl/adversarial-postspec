@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(description='Adversarial post-processing')
 parser.add_argument("--params", type=str, required=True, help="Pickled file with experiment settings")
 parser.add_argument("--model", type=str, required=True, help="File with trained parameters")
 parser.add_argument("--in_file", type=str, required=True, help="File with embeddings to be post-specialized")
-parser.add_argument("--out_file", type=str, required=True, help="File where post-specialized embeddings are saved")
+parser.add_argument("--out_dir", type=str, required=True, help="File where post-specialized embeddings are saved")
 parser.add_argument("--verbose", type=str, default="debug", help="Verbose level (2:debug, 1:info, 0:warning)")
 parser.add_argument("--cuda", type=bool, default=True, help="Run on GPU")
 
