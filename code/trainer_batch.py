@@ -332,7 +332,7 @@ class Trainer(object):
         mapped_emb = self.mapping(Variable(out_emb, volatile=True)).data.cpu().numpy()
 
         all_keys = out_dico.word2id.keys()
-        fhel = codecs.open(params.out_file)
+        fhel = codecs.open(params.out_dir)
         for key in all_keys:
             hv = mapped_emb[out_dico.index(key)]
             hv = hv / np.linalg.norm(hv)
