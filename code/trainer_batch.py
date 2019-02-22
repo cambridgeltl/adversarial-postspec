@@ -323,22 +323,3 @@ class Trainer(object):
         fhel.close()
         fall.close()
         logging.info("...Done!")
-
-    def export(self, params):
-        logging.info("Exporting mapped embeddings...")
-        self.mapping.eval()
-        out_dico, out_emb = load_external_embeddings(params, params.in_file)
-        params.out_dico = out_dico
-        mapped_emb = self.mapping(Variable(out_emb, volatile=True)).data.cpu().numpy()
-
-        all_keys = out_dico.word2id.keys()
-        fhel = codecs.open(params.out_dir)
-        for key in all_keys:
-            hv = mapped_emb[out_dico.index(key)]
-            hv = hv / np.linalg.norm(hv)
-            hv = map(str, list(hv))
-            hv = " ".join([str(key)] + hv) + "\n"
-            fhel.write(hv)
-
-        fhel.close()
-        logging.info("...Done!")
